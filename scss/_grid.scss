@@ -1,0 +1,106 @@
+//  Edit Values
+$widths: 10 20 25 50 75 100;
+$padds: 0 2 5;
+$breakpoints: (
+	xs: 0, 
+	sm: 320,
+	md: 640,
+	lg: 1024,
+	xl: 1400
+);
+
+$display_types: inline, inline-block;
+
+// Do Not Edit Below
+
+// Grid 
+.grid-row {
+	margin-left: -10px;
+	margin-right: -10px;
+	&:after {
+		display: table;
+		content: " ";
+		clear: both;
+	}
+	> [class^="col-"], > [class*=" col-"] { 
+		float: left;
+		min-height: 1px;
+		padding-left: 10px;
+		padding-right: 10px;
+		box-sizing: border-box;
+		position: relative;
+		width: 100%;
+	}
+	@each $padd in $padds { 
+		&.padd-#{$padd} {
+			margin-left: $padd * -1px;
+			margin-right: $padd * -1px;
+			> [class^="col-"], > [class*=" col-"] { 
+				padding-left: ($padd * 1px);
+				padding-right: ($padd * 1px);
+			}
+		}
+	}
+	@each $prefix, $breakpoint in $breakpoints {
+		@media screen and (min-width: #{$breakpoint + 1}px) {
+			@each $width in $widths {
+				> .col-#{$prefix}-#{$width} {
+					width: $width * 1%;
+				}
+				> .offset-#{$prefix}-#{$width} {
+					margin-left: $width * 1%;
+				}
+				> .push-#{$prefix}-#{$width} {
+					left: $width * 1%;
+				}
+				> .pull-#{$prefix}-#{$width} {
+					right: $width * 1%;
+				}
+			}
+			> .offset-#{$prefix}-reset {
+				margin-left: 0;
+			}
+		}
+	}
+}
+
+// Hide and show
+$bp_keys: map-keys($breakpoints);
+$bp_values: map-values($breakpoints);
+$bp_count: length($bp_keys);
+
+@for $i from 1 through $bp_count {
+	$key: nth($bp_keys, $i);
+	$min: nth($bp_values, $i);
+	@if $i+1 > $bp_count {
+		@media screen and (min-width: #{$min + 1}px) {
+			@each $type in $display_types {
+				.show-#{$key}-#{$type} {
+					display: #{$type} !important;
+				}
+			}
+			.show-#{$key} {
+				display: block !important;
+			}
+			.hide-#{$key} {
+				display: none !important;
+			}
+		}
+	}
+	@else {
+		$max: nth($bp_values, $i+1);
+		@media screen and (min-width: #{$min + 1}px) and (max-width: #{$max}px) {
+			@each $type in $display_types {
+				.show-#{$key}-#{$type} {
+					display: #{$type} !important;
+				}
+			}
+			.show-#{$key} {
+				display: block !important;
+			}
+			.hide-#{$key} {
+				display: none !important;
+			}
+		}
+	}
+}
